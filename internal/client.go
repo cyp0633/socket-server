@@ -2,6 +2,11 @@ package internal
 
 import "net"
 
+type Client struct {
+	Addr string
+	Conn net.Conn
+}
+
 var Clients map[string]net.Conn
 
 func AddClient(conn net.Conn) {
