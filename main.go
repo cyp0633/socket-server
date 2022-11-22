@@ -19,6 +19,5 @@ func main() {
 			panic(err)
 		}
 		go internal.TCPHandler(conn)
-		go internal.AddClient(conn)
 	}
 }
