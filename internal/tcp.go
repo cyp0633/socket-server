@@ -26,6 +26,12 @@ func TCPHandler(conn net.Conn) {
 			reply = ProcessHelo(msg)
 		case Send.MatchString(msg):
 			reply = ProcessSend(msg, client.Addr)
+		case Pull.MatchString(msg):
+			reply = ProcessPull(client)
+		case Exit.MatchString(msg):
+			reply = ProcessExit(client)
+		default:
+			reply = "ERROR"
 		}
 		_, err = conn.Write([]byte(reply))
 		if err != nil {

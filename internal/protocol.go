@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -35,5 +36,32 @@ func ProcessSend(msg string, from string) (reply string) {
 			reply = "OK"
 		}
 	}
+	return
+}
+
+// PULL 信息格式，如：PULL
+var Pull = regexp.MustCompile(`^PULL$`)
+
+func ProcessPull(client Client) (reply string) {
+	reply = "LEN " + fmt.Sprint(len(client.Messages)) + "\n"
+	for len(client.Messages) > 0 {
+		msg := <-client.Messages
+		reply += "FROM " + msg.From + " CONTENT " + msg.Content + "\n"
+	}
+	reply += "END"
+	return
+}
+
+// Exit 信息格式，如：EXIT
+var Exit = regexp.MustCompile(`^EXIT$`)
+
+// ProcessExit 退出
+func ProcessExit(client Client) (reply string) {
+	for i, c := range Clients {
+		if c.Addr == client.Addr {
+			Clients = append(Clients[:i], Clients[i+1:]...)
+		}
+	}
+	reply = "OK"
 	return
 }
