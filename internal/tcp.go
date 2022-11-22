@@ -8,7 +8,7 @@ import (
 func TCPHandler(conn net.Conn) {
 	// 添加客户端
 	addr := conn.RemoteAddr().(*net.TCPAddr).IP.String()
-	client := Client{Addr: addr, Conn: conn, Messages: make(chan Message)}
+	client := Client{Addr: addr, Conn: conn, Messages: make(chan Message, 100)}
 	Clients = append(Clients, client)
 
 	defer conn.Close()

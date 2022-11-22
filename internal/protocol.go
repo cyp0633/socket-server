@@ -3,7 +3,6 @@ package internal
 import (
 	"fmt"
 	"regexp"
-	"strings"
 )
 
 // HELO 信息格式，如：HELO
@@ -20,15 +19,18 @@ func ProcessHelo(msg string) (clients string) {
 }
 
 // SEND 信息格式，如：SEND 127.0.0.1 MSG This is Message
-var Send = regexp.MustCompile(`/^SEND [0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3} MSG .+`)
+var Send = regexp.MustCompile(`^SEND ((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4} MSG .+`)
+
+// 提取 IP 使用
+var sendIP = regexp.MustCompile(`^SEND .+ MSG`)
 
 // 提取消息使用
 var sendMessage = regexp.MustCompile(`MSG .+`)
 
 // ProcessSend 发送消息
 func ProcessSend(msg string, from string) (reply string) {
-	temp := strings.Split(msg, "")
-	addr := temp[1]
+	temp := sendIP.FindString(msg)
+	addr := temp[5 : len(temp)-4]
 	content := sendMessage.FindString(msg)[4:]
 	message := Message{From: from, To: addr, Content: content}
 	for _, client := range Clients {
