@@ -15,9 +15,15 @@ func TCPHandler(conn net.Conn) {
 			return
 		}
 		log.Default().Println(string(buf[:n]))
+		var reply string
 		switch msg := string(buf[:n]); {
-		case msg == "HELO":
+		case Helo.MatchString(msg):
+			reply = ProcessHelo(msg)
+		}
+		_, err = conn.Write([]byte(reply))
+		if err != nil {
+			log.Default().Println(err)
+			return
 		}
 	}
-
 }
