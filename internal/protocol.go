@@ -7,7 +7,7 @@ import (
 )
 
 // HELO 信息格式，如：HELO
-var Helo = regexp.MustCompile(`^HELO$`)
+var Helo = regexp.MustCompile(`^HELO`)
 
 // ProcessHelo 返回在线客户端列表
 func ProcessHelo(msg string) (clients string) {
@@ -15,6 +15,7 @@ func ProcessHelo(msg string) (clients string) {
 	for _, client := range Clients {
 		clients += client.Addr + " "
 	}
+	clients += "\n"
 	return
 }
 
@@ -33,14 +34,16 @@ func ProcessSend(msg string, from string) (reply string) {
 	for _, client := range Clients {
 		if client.Addr == addr {
 			client.Messages <- message
-			reply = "OK"
+			reply = "OK\n"
+			return
 		}
 	}
+	reply = "ERROR\n"
 	return
 }
 
 // PULL 信息格式，如：PULL
-var Pull = regexp.MustCompile(`^PULL$`)
+var Pull = regexp.MustCompile(`^PULL`)
 
 func ProcessPull(client Client) (reply string) {
 	reply = "LEN " + fmt.Sprint(len(client.Messages)) + "\n"
@@ -48,12 +51,12 @@ func ProcessPull(client Client) (reply string) {
 		msg := <-client.Messages
 		reply += "FROM " + msg.From + " CONTENT " + msg.Content + "\n"
 	}
-	reply += "END"
+	reply += "END\n"
 	return
 }
 
 // Exit 信息格式，如：EXIT
-var Exit = regexp.MustCompile(`^EXIT$`)
+var Exit = regexp.MustCompile(`^EXIT`)
 
 // ProcessExit 退出
 func ProcessExit(client Client) (reply string) {
@@ -62,6 +65,6 @@ func ProcessExit(client Client) (reply string) {
 			Clients = append(Clients[:i], Clients[i+1:]...)
 		}
 	}
-	reply = "OK"
+	reply = "OK\n"
 	return
 }
