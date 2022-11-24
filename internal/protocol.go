@@ -3,6 +3,8 @@ package internal
 import (
 	"fmt"
 	"regexp"
+
+	"go.uber.org/zap"
 )
 
 // HELO 信息格式，如：HELO
@@ -15,6 +17,7 @@ func ProcessHelo(msg string) (clients string) {
 		clients += client.Addr + " "
 	}
 	clients += "\n"
+	Logger.Info("Helo", zap.String("clients", clients))
 	return
 }
 
@@ -37,6 +40,7 @@ func ProcessSend(msg string, from string) (reply string) {
 		if client.Addr == addr {
 			client.Messages <- message
 			reply = "OK\n"
+			Logger.Info("Send", zap.String("from", from), zap.String("to", addr), zap.String("content", content))
 			return
 		}
 	}
@@ -54,6 +58,7 @@ func ProcessPull(client Client) (reply string) {
 		reply += "FROM " + msg.From + " CONTENT " + msg.Content + "\n"
 	}
 	reply += "END\n"
+	Logger.Info("Pull", zap.String("client", client.Addr), zap.String("reply", reply))
 	return
 }
 
@@ -68,5 +73,6 @@ func ProcessExit(client Client) (reply string) {
 		}
 	}
 	reply = "OK\n"
+	Logger.Info("Exit", zap.String("client", client.Addr))
 	return
 }

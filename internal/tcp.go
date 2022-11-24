@@ -3,6 +3,8 @@ package internal
 import (
 	"log"
 	"net"
+
+	"go.uber.org/zap"
 )
 
 func TCPHandler(conn net.Conn) {
@@ -10,6 +12,7 @@ func TCPHandler(conn net.Conn) {
 	addr := conn.RemoteAddr().(*net.TCPAddr).IP.String()
 	client := Client{Addr: addr, Conn: conn, Messages: make(chan Message, 100)}
 	Clients = append(Clients, client)
+	Logger.Info("New client", zap.String("addr", addr))
 
 	defer conn.Close()
 	for {
@@ -19,7 +22,7 @@ func TCPHandler(conn net.Conn) {
 			log.Default().Println(err)
 			return
 		}
-		log.Default().Println(string(buf[:n]))
+		Logger.Info("Received", zap.String("addr", addr), zap.String("msg", string(buf[:n])))
 		var reply string
 		switch msg := string(buf[:n]); {
 		case Helo.MatchString(msg):
