@@ -20,6 +20,7 @@ func TCPHandler(conn net.Conn) {
 		n, err := conn.Read(buf)
 		if err != nil {
 			log.Default().Println(err)
+			ProcessExit(client) // 通信中途断开，删除客户端
 			return
 		}
 		Logger.Info("Received", zap.String("addr", addr), zap.String("msg", string(buf[:n])))
