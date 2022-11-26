@@ -53,12 +53,19 @@ func ProcessSend(msg string, from string) (reply string) {
 var Pull = regexp.MustCompile(`^PULL`)
 
 func ProcessPull(client Client) (reply string) {
-	reply = "LEN " + fmt.Sprint(len(client.Messages)) + "\n"
+	// 返回消息信息
+	reply = fmt.Sprintf("%v MESSAGES\n", len(client.Messages))
 	for len(client.Messages) > 0 {
 		msg := <-client.Messages
 		reply += "FROM " + msg.From + " CONTENT " + msg.Content + "\n"
 	}
-	reply += "END\n"
+	reply += "END PULL\n"
+	// 返回用户信息
+	reply += fmt.Sprintf("%v USERS\n", len(Clients))
+	for _, u := range Clients {
+		reply += u.Addr + "\n"
+	}
+	reply += "END USER\n"
 	Logger.Info("Pull", zap.String("client", client.Addr), zap.String("reply", reply))
 	return
 }

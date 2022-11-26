@@ -12,7 +12,7 @@ The server part of Computer Networking course project, a chat software based on 
 
 要发送消息，可以使用 `SEND <dest_ip> MSG <message>`。正常情况下返回 `OK`。
 
-要获取用户列表，可以使用 `USER` 命令。正常情况下返回：
+<DEPRECATED>要只获取用户列表，可以使用 `USER` 命令。正常情况下返回：
 
 ```plain
 <user_num> USERS
@@ -21,14 +21,20 @@ The server part of Computer Networking course project, a chat software based on 
 ...
 ```
 
-要接收消息，可以使用 `PULL`。正常情况下返回：
+要接收消息和用户列表，可以使用 `PULL`。正常情况下返回：
 
 ```plain
-LEN <length>
+<msg_num> MESSAGES
 FROM <from_ip1> CONTENT <content1>
 FROM <from_ip2> CONTENT <content2>
 FROM <from_ip2> CONTENT <content2>
 ...
+END PULL
+<user_num> USERS
+<ip1>
+<ip2>
+...
+END USER
 ```
 
 此外，还可以通过 UDP 广播获得服务端地址。服务器监听 65433/udp 端口，你可以发送 `PROBE`，服务器会返回 `HERE` 到 65433/udp 端口。
