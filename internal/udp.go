@@ -17,8 +17,9 @@ func UDPHandler(ln *net.UDPConn) {
 		if err != nil {
 			Logger.Fatal("Read error", zap.Error(err))
 		}
-		Logger.Info("Received", zap.String("addr", addr.String()), zap.String("msg", string(data[:n])))
 		if udpRegex.MatchString(string(data[:n])) {
+			addr.Port = 65433
+			Logger.Info("Client probing", zap.String("addr", addr.String()))
 			ln.WriteToUDP([]byte("HERE"), addr)
 		}
 	}
