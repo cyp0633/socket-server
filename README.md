@@ -12,6 +12,14 @@ The server part of Computer Networking course project, a chat software based on 
 
 要发送消息，可以使用 `SEND <dest_ip> MSG <message>`。正常情况下返回 `OK`。
 
+要获取用户列表，可以使用 `USER` 命令。正常情况下返回：
+
+```plain
+<ip1>
+<ip2>
+...
+```
+
 要接收消息，可以使用 `PULL`。正常情况下返回：
 
 ```plain

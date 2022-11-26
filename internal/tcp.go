@@ -32,6 +32,8 @@ func TCPHandler(conn net.Conn) {
 			reply = ProcessSend(msg, client.Addr)
 		case Pull.MatchString(msg):
 			reply = ProcessPull(client)
+		case User.MatchString(msg):
+			reply = ProcessUser()
 		case Exit.MatchString(msg):
 			conn.Write([]byte(ProcessExit(client)))
 			conn.Close()

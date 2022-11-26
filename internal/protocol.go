@@ -77,3 +77,14 @@ func ProcessExit(client Client) (reply string) {
 	Logger.Info("Exit", zap.String("client", client.Addr))
 	return
 }
+
+var User = regexp.MustCompile(`^USER`)
+
+func ProcessUser() (reply string) {
+	for _, u := range Clients {
+		reply += u.Addr + "\n"
+	}
+	reply += "END\n"
+	Logger.Info("User", zap.Any("clients", Clients))
+	return
+}
