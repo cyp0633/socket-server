@@ -15,6 +15,7 @@ The server part of Computer Networking course project, a chat software based on 
 要获取用户列表，可以使用 `USER` 命令。正常情况下返回：
 
 ```plain
+<user_num> USERS
 <ip1>
 <ip2>
 ...

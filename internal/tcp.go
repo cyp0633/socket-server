@@ -39,6 +39,7 @@ func TCPHandler(conn net.Conn) {
 			conn.Close()
 			return
 		default:
+			Logger.Warn("Unknown command", zap.String("addr", addr), zap.String("msg", msg))
 			reply = "ERROR\n"
 		}
 		_, err = conn.Write([]byte(reply))

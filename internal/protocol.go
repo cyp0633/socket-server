@@ -81,6 +81,7 @@ func ProcessExit(client Client) (reply string) {
 var User = regexp.MustCompile(`^USER`)
 
 func ProcessUser() (reply string) {
+	reply = fmt.Sprintf("%v USERS\n", len(Clients))
 	for _, u := range Clients {
 		reply += u.Addr + "\n"
 	}
