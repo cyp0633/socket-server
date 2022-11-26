@@ -45,6 +45,7 @@ func ProcessSend(msg string, from string) (reply string) {
 		}
 	}
 	reply = "ERROR\n"
+	Logger.Error("Can't find send target", zap.String("from", from), zap.String("to", addr), zap.String("content", content))
 	return
 }
 
